@@ -23,7 +23,9 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <malloc.h>
 #include <debug.h>
+#include <arch/defines.h>
 #include <lib/fs.h>
 #include "ext2_priv.h"
 
@@ -116,9 +118,17 @@ status_t ext2_mount(bdev_t *dev, fscookie **cookie)
     ext2_t *ext2 = malloc(sizeof(ext2_t));
     ext2->dev = dev;
 
-    err = bio_read(dev, &ext2->sb, 1024, sizeof(struct ext2_super_block));
-    if (err < 0)
+    struct ext2_super_block *sb = memalign(CACHE_LINE,
+                                           ROUNDUP(sizeof(struct ext2_super_block), CACHE_LINE));
+
+    err = bio_read(dev, sb, 1024, sizeof(struct ext2_super_block));
+    if (err < 0) {
+        free(sb);
         goto err;
+    }
+
+    memcpy(&ext2->sb, sb, sizeof(struct ext2_super_block));
+    free(sb);
 
     endian_swap_superblock(&ext2->sb);
 
@@ -156,10 +166,11 @@ status_t ext2_mount(bdev_t *dev, fscookie **cookie)
     }
 
     /* read in all the group descriptors */
-    ext2->gd = malloc(sizeof(struct ext2_group_desc) * ext2->s_group_count);
+    size_t gd_size = sizeof(struct ext2_group_desc) * ext2->s_group_count;
+    ext2->gd = memalign(CACHE_LINE, ROUNDUP(gd_size, CACHE_LINE));
     err = bio_read(ext2->dev, (void *)ext2->gd,
                    (EXT2_BLOCK_SIZE(ext2->sb) == 4096) ? 4096 : 2048,
-                   sizeof(struct ext2_group_desc) * ext2->s_group_count);
+                   gd_size);
     if (err < 0) {
         err = -4;
         return err;

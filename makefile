@@ -75,7 +75,7 @@ ifeq ($(ENABLE_EARLY_ETHERNET),1)
 endif
 
 # setup toolchain prefix
-TOOLCHAIN_PREFIX ?= arm-eabi-
+TOOLCHAIN_PREFIX ?= arm-none-eabi-
 CFLAGS += -fstack-protector-all
 CFLAGS += -fno-strict-overflow
 CPPFLAGS := -fno-exceptions -fno-rtti -fno-threadsafe-statics
@@ -169,8 +169,6 @@ endif
 #Enable kaslr seed support
 ifeq ($(ENABLE_KASLRSEED),1)
   DEFINES += ENABLE_KASLRSEED_SUPPORT=1
-else
-  DEFINES += ENABLE_KASLRSEED_SUPPORT=0
 endif
 
 ifeq ($(TARGET_USE_SYSTEM_AS_ROOT_IMAGE),1)

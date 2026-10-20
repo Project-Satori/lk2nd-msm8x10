@@ -6,12 +6,7 @@ endif
 
 override ENABLE_LPAE_SUPPORT := 0
 
-# lk2nd provides its own mainline-friendly partial-goods implementation
-ifneq ($(filter msm8909, $(TARGET)),)
-override ENABLE_PARTIAL_GOODS_SUPPORT := 0
-MODULES += lk2nd/partial-goods
-endif
-
+-include lk2nd/project/$(TARGET).mk
 include project/$(TARGET).mk
 
 DEBUG := 1
@@ -32,6 +27,10 @@ MODULES += \
 	lk2nd/smp \
 	lk2nd/smp/spin-table \
 	lk2nd/version \
+
+ifneq ($(filter ENABLE_KASLRSEED_SUPPORT=1,$(DEFINES)),)
+MODULES += lk2nd/rng-seed
+endif
 
 # Disable SMP spin table if unsupported (without throwing errors)
 LK2ND_SMP_OPTIONAL := 1
@@ -75,7 +74,7 @@ DEFINES := $(filter-out USER_FORCE_RESET_SUPPORT=1, $(DEFINES))
 # Allow flashing independent of battery voltage
 DEFINES := $(filter-out CHECK_BAT_VOLTAGE=1, $(DEFINES))
 
-include $(if $(filter msm8660 msm8960, $(TARGET)), lk2nd/project/msm8x60.mk)
+include $(if $(filter msm8660 msm8960, $(TARGET)), lk2nd/project/msm8x60-late.mk)
 
 # Enable extlinux boot module for all targets with eMMC/UFS
 ifeq ($(EMMC_BOOT), 1)

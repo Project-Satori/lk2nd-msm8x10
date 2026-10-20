@@ -7,8 +7,13 @@ QCDTBS += \
 	$(LOCAL_DIR)/msm8905-qrd-skub.dtb \
 	$(LOCAL_DIR)/msm8909-1gb-qrd-skuc.dtb \
 	$(LOCAL_DIR)/msm8909-1gb-qrd-skue.dtb \
+	$(LOCAL_DIR)/msm8909-huawei-scale.dtb \
 	$(LOCAL_DIR)/msm8909-mtp.dtb \
 	$(LOCAL_DIR)/msm8909-zte-sapphire.dtb \
 
 ADTBS += \
 	$(LOCAL_DIR)/apq8009w-wtp.dtb \
+	$(LOCAL_DIR)/apq8009-qrd.dtb \
+	$(LOCAL_DIR)/msm8909-1gb-qrd-skua.dtb \
+	$(LOCAL_DIR)/msm8909-orbic-rc2200l.dtb \
+

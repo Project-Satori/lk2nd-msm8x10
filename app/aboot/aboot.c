@@ -368,7 +368,7 @@ struct getvar_partition_info part_type_known[] =
 
 char max_download_size[MAX_RSP_SIZE];
 char charger_screen_enabled[MAX_RSP_SIZE];
-char sn_buf[13];
+char sn_buf[MAX_RSP_SIZE];
 char display_panel_buf[MAX_PANEL_BUF_SIZE];
 char panel_display_mode[MAX_RSP_SIZE];
 char soc_version_str[MAX_RSP_SIZE];
@@ -2175,9 +2175,8 @@ int boot_linux_from_mmc(void)
 
 		memmove((void *)hdr->tags_addr, (char *)best_match_dt_addr, dtb_size);
 	} else {
-		/* Validate the tags_addr */
-		if (check_aboot_addr_range_overlap(hdr->tags_addr, kernel_actual) ||
-			check_ddr_addr_range_bound(hdr->tags_addr, kernel_actual))
+		/* Validate the tags_addr, dev_tree_appended() checks aboot overlap */
+		if (check_ddr_addr_range_bound(hdr->tags_addr, kernel_actual))
 		{
 			dprintf(CRITICAL, "Device tree addresses are not valid.\n");
 			return -1;
@@ -2478,9 +2477,8 @@ int boot_linux_from_flash(void)
 		memmove((void *)hdr->tags_addr, (char *)best_match_dt_addr, dtb_size);
 
 	} else {
-		/* Validate the tags_addr */
-		if (check_aboot_addr_range_overlap(hdr->tags_addr, kernel_actual) ||
-	        check_ddr_addr_range_bound(hdr->tags_addr, kernel_actual))
+		/* Validate the tags_addr, dev_tree_appended() checks aboot overlap */
+		if (check_ddr_addr_range_bound(hdr->tags_addr, kernel_actual))
 		{
 			dprintf(CRITICAL, "Device tree addresses are not valid.\n");
 			return -1;
@@ -3428,8 +3426,8 @@ void cmd_boot(const char *arg, void *data, unsigned sz)
 #endif
 
 #if DEVICE_TREE
-	if (check_aboot_addr_range_overlap(hdr->tags_addr, kernel_actual) ||
-		check_ddr_addr_range_bound(hdr->tags_addr, kernel_actual))
+	/* Validate the tags_addr, dev_tree_appended() checks aboot overlap */
+	if (check_ddr_addr_range_bound(hdr->tags_addr, kernel_actual))
 	{
 		dprintf(CRITICAL, "Tags addresses are not valid.\n");
 		goto boot_failed;
@@ -4672,7 +4670,8 @@ void cmd_continue(const char *arg, void *data, unsigned sz)
 		exit_menu_keys_detection();
 #endif
 #if WITH_LK2ND_BOOT
-		lk2nd_boot();
+		if (!boot_into_recovery)
+			lk2nd_boot();
 #endif
 		boot_linux_from_mmc();
 	}

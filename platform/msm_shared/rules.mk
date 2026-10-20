@@ -17,6 +17,9 @@ OBJS += \
 	$(LOCAL_DIR)/qgic_common.o \
 	$(LOCAL_DIR)/crc32.o
 
+PANIC_REBOOT_MODE ?= NORMAL_DLOAD
+DEFINES += PANIC_REBOOT_MODE=$(PANIC_REBOOT_MODE)
+
 ifneq ($(filter $(DEFINES), WITH_DEBUG_JTAG=1),)
 OBJS += \
 	$(LOCAL_DIR)/jtag_hook.o \
@@ -107,7 +110,8 @@ ifeq ($(PLATFORM),msm8x60)
 			$(LOCAL_DIR)/hdmi.o \
 			$(LOCAL_DIR)/interrupts.o \
 			$(LOCAL_DIR)/timer.o \
-			$(LOCAL_DIR)/nand.o
+			$(LOCAL_DIR)/nand.o \
+			$(LOCAL_DIR)/regulator.o
 endif
 
 ifeq ($(PLATFORM),msm8960)
@@ -132,7 +136,8 @@ ifeq ($(PLATFORM),msm8960)
 			$(LOCAL_DIR)/mipi_dsi_phy.o \
 			$(LOCAL_DIR)/timer.o \
 			$(LOCAL_DIR)/mdp_lcdc.o \
-			$(LOCAL_DIR)/nand.o
+			$(LOCAL_DIR)/nand.o \
+			$(LOCAL_DIR)/regulator.o
 endif
 
 ifeq ($(PLATFORM),msm8974)
@@ -166,7 +171,8 @@ DEFINES += DISPLAY_TYPE_MDSS=1
 			$(LOCAL_DIR)/edp.o \
 			$(LOCAL_DIR)/edp_util.o \
 			$(LOCAL_DIR)/edp_aux.o \
-			$(LOCAL_DIR)/edp_phy.o
+			$(LOCAL_DIR)/edp_phy.o \
+			$(LOCAL_DIR)/regulator.o
 endif
 
 ifeq ($(PLATFORM),msm8226)
@@ -196,7 +202,8 @@ DEFINES += DISPLAY_TYPE_MDSS=1
 			$(LOCAL_DIR)/dev_tree.o \
 			$(LOCAL_DIR)/gpio.o \
 			$(LOCAL_DIR)/dload_util.o \
-			$(LOCAL_DIR)/shutdown_detect.o
+			$(LOCAL_DIR)/shutdown_detect.o \
+			$(LOCAL_DIR)/regulator.o
 endif
 
 ifeq ($(PLATFORM),msm8916)
@@ -228,7 +235,8 @@ DEFINES += DISPLAY_TYPE_MDSS=1
 		$(LOCAL_DIR)/crypto5_eng.o \
 		$(LOCAL_DIR)/crypto5_wrapper.o \
 		$(LOCAL_DIR)/i2c_qup.o \
-		$(LOCAL_DIR)/mipi_dsi_i2c.o
+		$(LOCAL_DIR)/mipi_dsi_i2c.o \
+		$(LOCAL_DIR)/regulator.o
 
 endif
 
@@ -259,7 +267,8 @@ DEFINES += DISPLAY_TYPE_MDSS=1
             $(LOCAL_DIR)/crypto5_eng.o \
             $(LOCAL_DIR)/crypto5_wrapper.o \
             $(LOCAL_DIR)/dload_util.o \
-            $(LOCAL_DIR)/shutdown_detect.o
+            $(LOCAL_DIR)/shutdown_detect.o \
+            $(LOCAL_DIR)/regulator.o
 endif
 
 ifeq ($(PLATFORM),apq8084)
@@ -293,7 +302,8 @@ DEFINES += DISPLAY_TYPE_MDSS=1
 			$(LOCAL_DIR)/edp.o \
 			$(LOCAL_DIR)/edp_util.o \
 			$(LOCAL_DIR)/edp_aux.o \
-			$(LOCAL_DIR)/edp_phy.o
+			$(LOCAL_DIR)/edp_phy.o \
+			$(LOCAL_DIR)/regulator.o
 
 endif
 
@@ -414,7 +424,8 @@ DEFINES += DISPLAY_TYPE_QPIC=1
 			$(LOCAL_DIR)/qusb2_phy.o \
 			$(LOCAL_DIR)/display.o \
 			$(LOCAL_DIR)/qpic.o \
-			$(LOCAL_DIR)/qpic_panel.o
+			$(LOCAL_DIR)/qpic_panel.o \
+			$(LOCAL_DIR)/regulator.o
 endif
 
 ifeq ($(PLATFORM),fsm9900)
