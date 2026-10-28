@@ -5,6 +5,7 @@
 
 #include "lk_panel_boent35523_800p_video.h"
 #include "lk_panel_boent35523b_800p_video.h"
+#include "lk_panel_boe_nt35517_5_qhd_video.h"
 #include "lk_panel_boe_otm8019a_5p0_fwvga_video.h"
 #include "lk_panel_boehx8389c_qhd_video.h"
 #include "lk_panel_ee_hx8394a_720p_video.h"
@@ -19,7 +20,8 @@
 #include "lk_panel_orise8012a_fwvga_cmd.h"
 #include "lk_panel_r61308_720p_video.h"
 #include "lk_panel_r69431_720p_video.h"
-#include "lk_panel_tc7x_ili9881c_5p0inch_720p_video.h"
+//#include "lk_panel_tc7x_ili9881c_5p0inch_720p_video.h"
+#include "lk_panel_tianma_otm9605a_5_qhd_video.h"
 #include "lk_panel_truly_qhd_video.h"
 
 int oem_panel_select(const char *panel_name, struct panel_struct *panel,
