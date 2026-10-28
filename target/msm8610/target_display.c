@@ -61,15 +61,12 @@ static struct gpio_pin reset_gpio = {
   "msmgpio", 41, 3, 1, 0, 1
 };
 
-static struct gpio_pin mode_gpio = {
-  "msmgpio", 7, 3, 1, 0, 1
-};
 
 /*---------------------------------------------------------------------------*/
 /* Supply configuration                                                      */
 /*---------------------------------------------------------------------------*/
 static struct ldo_entry ldo_entry_array[] = {
-{ "vddio", 14, 0, 1800000, 100000, 100, 0, 0, 0, 0},
+{ "vddio", 6, 0, 1800000, 100000, 100, 0, 0, 0, 0},
 { "vdda", 19, 0, 2850000, 100000, 100, 0, 0, 0, 0},
 };
 
@@ -78,6 +75,9 @@ int target_backlight_ctrl(struct backlight *bl, uint8_t enable)
 {
 	struct pm8x41_mpp mpp;
 	int rc;
+
+	if (bl->bl_interface_type == BL_DCS)
+		return 0;	
 
 	mpp.base = PM8x41_MMP3_BASE;
 	mpp.vin = MPP_VIN3;
@@ -131,11 +131,6 @@ int target_panel_reset(uint8_t enable, struct panel_reset_sequence *resetseq,
 		gpio_tlmm_config(reset_gpio.pin_id, 0,
 				reset_gpio.pin_direction, reset_gpio.pin_pull,
 				reset_gpio.pin_strength, reset_gpio.pin_state);
-
-		gpio_tlmm_config(mode_gpio.pin_id, 0,
-				mode_gpio.pin_direction, mode_gpio.pin_pull,
-				mode_gpio.pin_strength, mode_gpio.pin_state);
-
 		/* reset */
 		for (i = 0; i < RESET_GPIO_SEQ_LEN; i++) {
 			if (resetseq->pin_state[i] == GPIO_STATE_LOW)
@@ -145,13 +140,8 @@ int target_panel_reset(uint8_t enable, struct panel_reset_sequence *resetseq,
 			mdelay(resetseq->sleep[i]);
 		}
 
-		if (pinfo->mipi.mode_gpio_state == MODE_GPIO_STATE_ENABLE)
-			gpio_set(mode_gpio.pin_id, 2);
-		else if (pinfo->mipi.mode_gpio_state == MODE_GPIO_STATE_DISABLE)
-			gpio_set(mode_gpio.pin_id, 0);
 	} else if(!target_cont_splash_screen()) {
 		gpio_set(reset_gpio.pin_id, 0);
-		gpio_set(mode_gpio.pin_id, 0);
 	}
 	return 0;
 }
